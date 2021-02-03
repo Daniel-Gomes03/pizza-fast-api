@@ -1,0 +1,17 @@
+{
+  "SizePrice": { "small": 8, "medium": 10, "large": 12 },
+  "CrustTypePrice": { "thin": 2, "thick": 4 },
+  "ToppingLimit": { "small": 5, "medium": 7, "large": 9 },
+  "Toppings": {
+    "pepperoni": "pepperoni",
+    "mushrooms": "mushrooms",
+    "onions": "onions",
+    "sausage": "sausage",
+    "bacon": "bacon",
+    "extra cheese": "extra cheese",
+    "black olives": "black olives",
+    "green peppers": "green peppers",
+    "pineapple": "pineapple",
+    "spinach": "spinach"
+  }
+}
