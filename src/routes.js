@@ -2,8 +2,6 @@ const routes = require('express').Router()
 const { v4, isUuid } = require('uuid');
 const options = require('./config/options.json')
 
-const pizzas = [];
-
 function validatePizzaId(request, response, next) {
   const { id } = request.params;
 
@@ -33,7 +31,7 @@ routes.get('/pizza', (request, response) => {
 routes.post('/pizza', (request, response) => {
   const { name, address, size, crustType, toppings, finalPrice } = request.body;
 
-  const newPizza ={ id: v4(), name, size, crustType, toppings, finalPrice };
+  const newPizza ={ id: v4(), name, address, size, crustType, toppings, finalPrice };
 
   pizzas.push(newPizza);
 
