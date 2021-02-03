@@ -20,6 +20,4 @@ app.use(morgan("dev"));
 
 app.use(require('./routes'));
 
-app.listen(process.env.Port || 3000, () => {
-  console.log('🚀 Back-end started')
-});
+app.listen(process.env.PORT || 3000);
