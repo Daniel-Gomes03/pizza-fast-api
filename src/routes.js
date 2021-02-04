@@ -1,55 +1,60 @@
-const routes = require('express').Router()
-const { v4, isUuid } = require('uuid');
-const options = require('./config/options.json')
+const { Router } = require('express');
+const { v4 } = require('uuid');
 
-function validatePizzaId(request, response, next) {
-  const { id } = request.params;
+const Pizza = require('./app/models/pizza');
+const options = require('./config/options.json');
 
-  if (!isUuid(id)) {
-    return response.status(400).json({ error: 'Invalid pizza ID.' });
-  }
-
-  return next();
-}
-
-routes.use('/pizza/:id', validatePizzaId);
+const routes = Router();
 
 routes.get('/options', (request, response) => {
   return response.send(options);
-})
-
-routes.get('/pizza', (request, response) => {
-  const { name } = request.query;
-
-  const results = name 
-    ? pizzas.filter(pizza => pizza.name.includes(name))
-    : pizzas;
-
-  return response.json(results);
 });
 
-routes.post('/pizza', (request, response) => {
-  const { name, address, size, crustType, toppings, finalPrice } = request.body;
+routes.get('/pizzas/:id', async (request, response) => {
 
-  const newPizza ={ id: v4(), name, address, size, crustType, toppings, finalPrice };
+  console.log(request.params);
+  try {
+    const { id } = request.params;
 
-  pizzas.push(newPizza);
+    const results = await Pizza.find({_id: id});
 
-  return response.json(newPizza);
-});
-
-routes.delete('/pizza/:id', (request, response) => {
-  const { id } = request.params;
-
-  const projectIndex = pizzas.findIndex(project => project.id === id);
-
-  if (projectIndex < 0) {
-    return response.status(400).json({ error: 'Pizza not found.' });
+    return response.json(results);
+  } catch (error) {
+    return response
+    .status(400)
+    .json({ message: error.message || "Unexpected error." });
   }
+});
 
-  pizzas.splice(projectIndex, 1)
+routes.post('/pizzas', async (request, response) => {
+  try {
+    const { name, address, size, crustType, toppings, finalPrice } = request.body;
+    const newPizza = { id: v4(), name, address, size, crustType, toppings, finalPrice };
 
-  return response.status(204).send();
+    const createPizza = await Pizza.create(newPizza);
+
+    return response.status(200).json(createPizza);
+  } catch (error) {
+    return response
+    .status(400)
+    .json({ message: error.message || "Unexpected error." });
+  }
+  
+});
+
+routes.delete('/pizzas/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    await Pizza.deleteOne({_id: id})
+  
+    response.status(204).json({});
+    
+  } catch (error) {
+    return response
+    .status(400)
+    .json({ message: error.message || "Unexpected error." });
+  }
 });
 
 module.exports = routes;
